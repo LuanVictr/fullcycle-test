@@ -1,7 +1,6 @@
-version: '3'
+version: '3.8'
 
 services:
-
   app:
     build:
       context: node
@@ -25,22 +24,24 @@ services:
       - app
 
   database:
-    image: mysql:8.0
+    image: mysql:5.7
     command: --innodb-use-native-aio=0
     container_name: database
     restart: always
-    tty: true
+    ports:
+      - "3306:3306"
     volumes:
-      - mysql:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+    tty: true
     environment:
-      - MYSQL_DATABASE=database
+      - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 5s
-      timeout: 10s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 20s
+      timeout: 40s
       retries: 3
 
 volumes:
   mysql:
-    driver: local
+    driver: mysql2
