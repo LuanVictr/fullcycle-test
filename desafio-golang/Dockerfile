@@ -3,6 +3,8 @@ FROM golang:1.16
 WORKDIR /go/src
 ENV PATH="/go/bin:${PATH}"
 
+RUN git config --global --add url."git@github.com:".insteadOf "https://github.com/"
+
 RUN go get -u github.com/spf13/cobra@latest && \
     go install github.com/golang/mock/mockgen@v1.5.0 && \
     go install github.com/spf13/cobra-cli@latest
